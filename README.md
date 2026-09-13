@@ -1,4 +1,4 @@
-# Playwright Practice 1
+# Playwright Practice
 
 This repository contains a Playwright automation project focused on learning and practicing browser-based test automation using the Playwright framework. The tests interact with the public PlaywrightLab demo site and cover common UI behaviors such as navigation, login flow, theme switching, cookie banner handling, and menu interactions.
 
