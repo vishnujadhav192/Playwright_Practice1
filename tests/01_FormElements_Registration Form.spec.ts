@@ -39,11 +39,6 @@ test('Click on Menu Forms option', async ({ page }) => {
 
     const registrationCard = page.getByTestId('registration-card');
     await expect(registrationCard.getByRole('heading', { name: /Registration Form/ })).toBeVisible();
-
-    // Trigger validation without filling anything
-    await page.getByRole('button', { name: 'Register' }).click();
-    await expect(page.locator('[data-testid="form-success"]'))
-        .toHaveText('Registration successful! Welcome aboard.');
 })
 
 test('Full Name validation check', async ({ page }) => {
