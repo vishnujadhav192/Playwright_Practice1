@@ -23,22 +23,20 @@ test.beforeEach(async ({ page }) => {
 // });
 
 test('Click on Menu Forms option', async ({ page }) => {
-    // const MenuButton = page.getByRole('link', { name: 'Menu' })
-    // await MenuButton.click();
-    // await page.locator('a').filter({ hasText: 'Forms' }).first().click();
-
     await page.getByTestId('nav-menu').click();
-
     await page.getByTestId('nav-forms').click();
 
-    const registrationFormTitle = page.locator('#registrationTitle');
+    const registrationCard = page.getByTestId('registration-card');
+    await expect(registrationCard).toBeVisible();
+    await expect(registrationCard).toContainText('Registration Form');
+    await expect(registrationCard).toContainText('Validation');
+    await expect(registrationCard.getByRole('heading', { name: /Registration Form/ })).toBeVisible();
 
     // Assertion
+    const registrationFormTitle = page.locator('#registrationTitle');
+
     await expect(registrationFormTitle).toBeVisible();
     await expect(registrationFormTitle).toContainText('Registration Form');
-
-    const registrationCard = page.getByTestId('registration-card');
-    await expect(registrationCard.getByRole('heading', { name: /Registration Form/ })).toBeVisible();
 })
 
 test('Full Name validation check', async ({ page }) => {
