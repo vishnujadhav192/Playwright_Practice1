@@ -15,6 +15,10 @@ test.beforeEach(async ({ page }) => {
     await expect(cookiesBanneracceptbutton).not.toBeVisible();
     await expect(cookieBanner).toBeHidden();
     await expect(cookieBanner).not.toBeVisible();
+
+    const sliderCard = page.getByTestId('slider-card');
+    await sliderCard.scrollIntoViewIfNeeded();
+    await expect(sliderCard).toBeVisible();
 });
 
 // test.afterEach(async ({ page }) => {
@@ -22,14 +26,6 @@ test.beforeEach(async ({ page }) => {
 //     await page.close();
 // });
 
-test('Click on Menu Forms option', async ({ page }) => {
-    await page.getByTestId('nav-menu').click();
-    await page.getByTestId('nav-forms').click();
-
-    // Assert the slider card is visible
-    const sliderCard = page.getByTestId('slider-card');
-    await expect(sliderCard).toBeVisible();
-})
 
 test.describe('Volume group slider', () => {
 

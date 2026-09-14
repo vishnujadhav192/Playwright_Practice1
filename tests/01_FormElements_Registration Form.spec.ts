@@ -15,6 +15,13 @@ test.beforeEach(async ({ page }) => {
     await expect(cookiesBanneracceptbutton).not.toBeVisible();
     await expect(cookieBanner).toBeHidden();
     await expect(cookieBanner).not.toBeVisible();
+
+//    const registrationCard = page.getByTestId('registration-card');
+
+    const registrationTitle = page.locator('#registrationTitle')
+
+    await registrationTitle.scrollIntoViewIfNeeded();
+    await expect(registrationTitle).toBeVisible();
 });
 
 // test.afterEach(async ({ page }) => {
