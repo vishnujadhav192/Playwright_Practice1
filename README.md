@@ -1,42 +1,53 @@
 # Playwright Practice
 
-This repository contains a Playwright automation project focused on learning and practicing browser-based test automation using the Playwright framework. The tests interact with the public PlaywrightLab demo site and cover common UI behaviors such as navigation, login flow, theme switching, cookie banner handling, and menu interactions.
+This repository contains a Playwright + TypeScript automation project for learning and practicing browser UI testing against the public PlaywrightLab demo site.
+
+The suite covers common front-end flows such as navigation, forms, validation, login/logout, menu interactions, theme switching, and cookie banner handling.
 
 ## Tech Stack
 
 - Playwright
 - TypeScript
 - Node.js
+- HTML reporter
 
 ## Project Structure
 
 ```bash
 .
 ├── tests/
+│   ├── 01_FormElements_AutoSuggestion.spec.ts
+│   ├── 01_FormElements_File_Upload.spec.ts
+│   ├── 01_FormElements_Registration Form.spec.ts
+│   ├── 01_FormElements_Sliders_Range.spec.ts
 │   ├── example.spec.ts
 │   └── playwrightlab_navBar_Header1.spec.ts
+├── FilesForUploads/
+├── playwright-report/
+├── test-results/
 ├── package.json
 ├── playwright.config.ts
 ├── tsconfig.json
-├── playwright-report/
-├── test-results/
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
-## Features Covered
+## Included Practice Scenarios
 
-- Page navigation and URL validation
+- Page title and navigation checks
 - Cookie banner dismissal
-- Navbar and menu dropdown interactions
-- Login and logout flows
-- Theme toggle testing
-- Basic assertions and UI validation with Playwright
+- Navbar and dropdown menu validation
+- Login flow and logout flow
+- Theme toggle (day/night)
+- Registration form validation
+- Email and full name validation checks
+- File upload, slider and auto-suggestion examples
 
 ## Prerequisites
 
-Make sure you have the following installed:
+Make sure the following are installed:
 
-- Node.js (v18 or later recommended)
+- Node.js 18+
 - npm
 
 ## Installation
@@ -45,9 +56,7 @@ Make sure you have the following installed:
 npm install
 ```
 
-## Run the Tests
-
-You can run Playwright tests using the npm scripts defined in `package.json`.
+## Run Tests
 
 ### Run all tests
 
@@ -55,7 +64,27 @@ You can run Playwright tests using the npm scripts defined in `package.json`.
 npx playwright test
 ```
 
-### Run project-specific scripts
+### Run in headed mode
+
+```bash
+npx playwright test --headed
+```
+
+### Run a specific file
+
+```bash
+npx playwright test tests/playwrightlab_navBar_Header1.spec.ts
+```
+
+### Open the HTML report
+
+```bash
+npx playwright show-report
+```
+
+## NPM Scripts
+
+This project includes the following scripts:
 
 ```bash
 npm run test:sprint1
@@ -66,44 +95,27 @@ npm run test:sanity
 npm run test:regression
 npm run test:e2e
 npm run test:datadriven
-```
-
-### Run headed mode for sanity tests
-
-```bash
 npm run test:master:headed
-```
-
-### Debug a test
-
-```bash
 npm run test:sanity:debug
 ```
 
-## Configuration
+## Configuration Highlights
 
-The Playwright setup is defined in `playwright.config.ts` and includes:
+The test configuration in `playwright.config.ts` includes:
 
 - test directory: `./tests`
 - HTML reporter enabled
 - Chromium project configured
-- trace collection on first retry
-- video recording enabled
-- headless mode disabled in local config
+- trace captured on first retry
+- local execution with `headless: false`
+- slow motion enabled via `launchOptions.slowMo`
 
 ## Notes
 
-This project is intended as a practice repository for learning Playwright concepts and writing browser automation scripts in TypeScript. It is set up for local experimentation and UI test learning.
+This project is intended for learning Playwright automation, writing robust selectors, asserting UI states, and practicing end-to-end browser testing in a real web app.
 
-## Useful Commands
-
-```bash
-npx playwright test --headed
-npx playwright test --reporter=line
-npx playwright show-report
-```
-
-## References
+## Useful References
 
 - https://playwright.dev/
 - https://playwright.dev/docs/intro
+- https://playwright.dev/docs/test-api
