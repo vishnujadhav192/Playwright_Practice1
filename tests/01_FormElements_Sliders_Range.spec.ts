@@ -269,9 +269,6 @@ test.describe('Price Range slider', () => {
     });
 })
 
-
-
-
 test.describe('Favorite Color', () => {
 
     test('Favorite Color : Assert the initial value', async ({ page }) => {

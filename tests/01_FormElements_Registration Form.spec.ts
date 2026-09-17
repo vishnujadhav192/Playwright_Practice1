@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
     await expect(cookieBanner).toBeHidden();
     await expect(cookieBanner).not.toBeVisible();
 
-//    const registrationCard = page.getByTestId('registration-card');
+    //    const registrationCard = page.getByTestId('registration-card');
 
     const registrationTitle = page.locator('#registrationTitle')
 
@@ -33,17 +33,31 @@ test('Click on Menu Forms option', async ({ page }) => {
     await page.getByTestId('nav-menu').click();
     await page.getByTestId('nav-forms').click();
 
-    const registrationCard = page.getByTestId('registration-card');
-    await expect(registrationCard).toBeVisible();
-    await expect(registrationCard).toContainText('Registration Form');
-    await expect(registrationCard).toContainText('Validation');
-    await expect(registrationCard.getByRole('heading', { name: /Registration Form/ })).toBeVisible();
+    // By id
+    await expect(page.locator('#formsTitle')).toHaveText('Form Elements');
 
-    // Assertion
-    const registrationFormTitle = page.locator('#registrationTitle');
+    // By role (more robust, recommended)
+    await expect(page.getByRole('heading', { name: 'Form Elements' })).toBeVisible();
 
-    await expect(registrationFormTitle).toBeVisible();
-    await expect(registrationFormTitle).toContainText('Registration Form');
+    // Also check the section is visible (has the 'visible' class)
+    await expect(page.locator('#formsHeader')).toHaveClass(/visible/);
+
+    await page.mouse.move(0, 0);
+
+    // Assert the dropdown closes after selecting an item
+    await expect(page.getByTestId('dropdown-menu')).toBeHidden();
+
+    // const registrationCard = page.getByTestId('registration-card');
+    // await expect(registrationCard).toBeVisible();
+    // await expect(registrationCard).toContainText('Registration Form');
+    // await expect(registrationCard).toContainText('Validation');
+    // await expect(registrationCard.getByRole('heading', { name: /Registration Form/ })).toBeVisible();
+
+    // // Assertion
+    // const registrationFormTitle = page.locator('#registrationTitle');
+
+    // await expect(registrationFormTitle).toBeVisible();
+    // await expect(registrationFormTitle).toContainText('Registration Form');
 })
 
 test('Full Name validation check', async ({ page }) => {
