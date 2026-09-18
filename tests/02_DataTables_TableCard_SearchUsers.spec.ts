@@ -27,7 +27,6 @@ async function verifyCardVisible(page: Page, testId: string) {
 //     //await page.close();
 // });
 
-
 test.describe('Search users', () => {
 
     test('Search users by partial name and verify valid result (1 record)', async ({ page }) => {

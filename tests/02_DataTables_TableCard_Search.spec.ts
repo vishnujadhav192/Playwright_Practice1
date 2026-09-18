@@ -28,7 +28,6 @@ async function verifyCardVisible(page: Page, testId: string) {
 //     //await page.close();
 // });
 
-
 test('Click on Menu Tables option', async ({ page }) => {
     await page.getByTestId('nav-menu').click();
     await page.getByTestId('nav-tables').click();
