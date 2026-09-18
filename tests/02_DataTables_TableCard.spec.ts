@@ -15,7 +15,6 @@ test.beforeEach(async ({ page }) => {
     await expect(cookiesBanneracceptbutton).not.toBeVisible();
     await expect(cookieBanner).toBeHidden();
     await expect(cookieBanner).not.toBeVisible();
-
 });
 
 async function verifyCardVisible(page: Page, testId: string) {
@@ -75,6 +74,7 @@ test('Click on Menu Tables option', async ({ page }) => {
 })
 
 test.describe('Navigate between pages', () => {
+
     test('Navigate using Next/Prev buttons and verify cumulative count', async ({ page }) => {
         const tableCard = page.getByTestId('table-card');
         const tableRows = tableCard.locator('table tbody tr');
@@ -319,7 +319,6 @@ test.describe('Search users', () => {
     });
 
     test('Search with no matches shows empty state', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -333,7 +332,6 @@ test.describe('Search users', () => {
     });
 
     test('Search users by exact email and verify valid result (1 record)', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -360,7 +358,6 @@ test.describe('Search users', () => {
     });
 
     test('Search users by name and verify valid results : 2 records', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card'); // scope to avoid picking up other tables on page
@@ -394,7 +391,6 @@ test.describe('Search users', () => {
     });
 
     test('Search users by name and verify valid results : 2 records (A cleaner, more maintainable way)', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -421,7 +417,6 @@ test.describe('Search users', () => {
     });
 
     test('Search users by email and verify valid results : 3 records (A cleaner, more maintainable way)', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -540,7 +535,6 @@ test.describe('Role filter dropdown', () => {
     });
 
     test('Filter shows only rows matching selected role — no leakage from other roles', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -559,7 +553,6 @@ test.describe('Role filter dropdown', () => {
     });
 
     test('Switching filter from Admin to Editor updates results correctly', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -576,7 +569,6 @@ test.describe('Role filter dropdown', () => {
     });
 
     test('Resetting filter to "All Roles" restores full list', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -596,7 +588,6 @@ test.describe('Role filter dropdown', () => {
 test.describe('Search scope and empty state', () => {
 
     test('Search does NOT match Role or Status values (search is Name/Email only)', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -615,7 +606,6 @@ test.describe('Search scope and empty state', () => {
     });
 
     test('Pagination controls are disabled when there are 0 results', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
 
         const tableCard = page.getByTestId('table-card');
@@ -633,7 +623,6 @@ test.describe('Search scope and empty state', () => {
     });
 
     test('Clearing search after a no-match query restores full list', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
         const tableCard = page.getByTestId('table-card');
         const searchInput = page.getByTestId('table-search');
@@ -646,14 +635,11 @@ test.describe('Search scope and empty state', () => {
         await expect(tableRows).toHaveCount(5); // back to default page size
         await expect(tableCard.getByText('Showing 1-5 of 15 entries')).toBeVisible();
     });
-
 });
-
 
 test.describe('Column sorting behavior', () => {
 
     test('Verify which columns have sortable markers', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
         const tableCard = page.getByTestId('table-card');
 
@@ -669,7 +655,6 @@ test.describe('Column sorting behavior', () => {
     });
 
     test('Non-sortable columns (Role, Actions) do not trigger sorting', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
         const tableCard = page.getByTestId('table-card');
         const tableRows = tableCard.locator('table tbody tr');
@@ -686,7 +671,6 @@ test.describe('Column sorting behavior', () => {
     });
 
     test('ID column sorts numerically, not alphabetically', async ({ page }) => {
-
         await verifyCardVisible(page, 'table-card');
         const tableCard = page.getByTestId('table-card');
         const tableRows = tableCard.locator('table tbody tr');
