@@ -50,6 +50,28 @@ async function countAllRowsAcrossPages(
     return { totalRows, pageCount };
 }
 
+async function getAllRolesAcrossPages(page: Page): Promise<string[]> {
+    const roles: string[] = [];
+    const nextBtn = page.getByTestId('page-next');
+
+    // Always reset to page 1
+    const firstPageBtn = page.getByTestId('page-1');
+    if (await firstPageBtn.isVisible()) {
+        await firstPageBtn.click();
+    }
+
+    while (true) {
+        const roleCells = page.locator('[data-testid="table-body"] tr td:nth-child(5)');
+        roles.push(...await roleCells.allTextContents());
+
+        if (await nextBtn.isDisabled()) break;
+        await nextBtn.click();
+        await expect(roleCells.first()).toBeVisible();
+    }
+
+    return roles;
+}
+
 // test.afterEach(async ({ page }) => {
 //     //await page.close();
 // });
@@ -149,6 +171,28 @@ test.describe('Navigate between pages', () => {
         const { totalRows: recordCount } = await countAllRowsAcrossPages(page, tableRows, nextBtn);
 
         console.log("Record count: ", recordCount);
+    });
+
+
+    test('Verify total records match footer count (any number of pages) after applying filters', async ({ page }) => {
+        await verifyCardVisible(page, 'table-card');
+
+        const tableCard = page.getByTestId('table-card');
+        const tableRows = tableCard.locator('table tbody tr');
+        const nextBtn = page.getByTestId('page-next');
+        const rowsPerPage = page.getByTestId('rows-per-page');
+
+        await rowsPerPage.selectOption('15');
+
+        // ---- Count user (jumps to page 1 internally) ----
+        const { totalRows: recordCount } = await countAllRowsAcrossPages(page, tableRows, nextBtn);
+        console.log("Record count: ", recordCount);
+
+        const roleFilter = page.getByTestId('table-filter');
+        await roleFilter.selectOption('editor');
+
+        const { totalRows: recordCountAfterFiltering } = await countAllRowsAcrossPages(page, tableRows, nextBtn);
+        console.log("Record count: ", recordCountAfterFiltering);
     });
 
     test('Add user increases total record count by 1 across all pages', async ({ page }) => {
@@ -284,7 +328,50 @@ test.describe('Add users', () => {
         await expect(userRow1).toHaveCount(1);   // only one row matches both
         await expect(userRow1).toContainText(userData.userRole);
         await expect(userRow1).toContainText('active');
-    })
+    });
+
+      test('Click add user button but dont add any record', async ({ page }) => {
+        await verifyCardVisible(page, 'table-card');
+
+        const tableCard = page.getByTestId('table-card');
+        const tableRows = tableCard.locator('table tbody tr');
+        const nextBtn = page.getByTestId('page-next');
+        const rowsPerPage = page.getByTestId('rows-per-page');
+
+        await rowsPerPage.selectOption('5');
+
+        // ---- Count BEFORE adding user (jumps to page 1 internally) ----
+        const { totalRows: countBefore } = await countAllRowsAcrossPages(page, tableRows, nextBtn);
+        console.log(`Total records before adding user: ${countBefore}`);
+
+        const userData = {
+            userName: 'Ethan Hunt',
+            userEmail: 'ethan@dummy.com',
+            userRole: 'editor',
+        };
+
+        await page.getByTestId('add-row-btn').click();
+
+        const modal = page.getByTestId('modal-title');
+        await expect(modal).toBeVisible();
+
+        await page.getByTestId('new-user-name').fill(userData.userName);
+        await page.getByTestId('new-user-email').fill(userData.userEmail);
+        await page.getByTestId('new-user-role').selectOption(userData.userRole);
+
+        await page.getByTestId('modal-cancel').click();
+        await expect(modal).toBeHidden();
+
+        // Re-assert rows-per-page in case it reset after the mutation
+        await rowsPerPage.selectOption('5');
+
+        // ---- Count AFTER adding user (jumps to page 1 internally again) ----
+        const { totalRows: countAfter } = await countAllRowsAcrossPages(page, tableRows, nextBtn);
+        console.log(`Total records after adding user: ${countAfter}`);
+
+        // ---- Final assertion ----
+        expect(countAfter, 'Record count should not increase').toBe(countBefore);
+    });
 })
 
 test.describe('Search users', () => {
@@ -583,6 +670,86 @@ test.describe('Role filter dropdown', () => {
         await expect(tableRows).toHaveCount(5); // still 5 due to "5 per page" pagination
         await expect(tableCard.getByText('Showing 1-5 of 15 entries')).toBeVisible();
     });
+
+    test('Filter by roles and verify all records are filter correctly', async ({ page }) => {
+        await verifyCardVisible(page, 'table-card');
+
+        const tableCard = page.getByTestId('table-card');
+        const roleFilter = page.getByTestId('table-filter');
+        const tableRows = tableCard.locator('table tbody tr');
+
+        const addRow = page.getByTestId('add-row-btn');
+        await addRow.click();
+        const modal = page.locator('[data-testid="modal-title"]');
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'admin');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'editor');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'editor');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+        await addRow.click();
+        await expect(modal).toBeVisible();
+        await page.selectOption('[data-testid="new-user-role"]', 'viewer');
+        await page.click('[data-testid="modal-confirm"]');
+
+
+        await roleFilter.selectOption('all');
+        await expect(roleFilter).toHaveValue('all');
+
+        await roleFilter.selectOption('admin');
+        await expect(roleFilter).toHaveValue('admin');
+
+        const adminRoles = await getAllRolesAcrossPages(page);
+        adminRoles.forEach(role => expect(role).toBe('admin'));
+
+        await roleFilter.selectOption('editor');
+        await expect(roleFilter).toHaveValue('editor');
+
+        const editorRoleFilter = await getAllRolesAcrossPages(page);
+        editorRoleFilter.forEach(role => expect(role).toBe('editor'));
+
+        await roleFilter.selectOption('viewer');
+        await expect(roleFilter).toHaveValue('viewer');
+
+        const viewerRoleFilter = await getAllRolesAcrossPages(page);
+        viewerRoleFilter.forEach(role => expect(role).toBe('viewer'));
+    });
+
+
+
 });
 
 test.describe('Search scope and empty state', () => {
