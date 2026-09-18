@@ -50,28 +50,6 @@ async function countAllRowsAcrossPages(
     return { totalRows, pageCount };
 }
 
-async function getAllRolesAcrossPages(page: Page): Promise<string[]> {
-    const roles: string[] = [];
-    const nextBtn = page.getByTestId('page-next');
-
-    // Always reset to page 1
-    const firstPageBtn = page.getByTestId('page-1');
-    if (await firstPageBtn.isVisible()) {
-        await firstPageBtn.click();
-    }
-
-    while (true) {
-        const roleCells = page.locator('[data-testid="table-body"] tr td:nth-child(5)');
-        roles.push(...await roleCells.allTextContents());
-
-        if (await nextBtn.isDisabled()) break;
-        await nextBtn.click();
-        await expect(roleCells.first()).toBeVisible();
-    }
-
-    return roles;
-}
-
 // test.afterEach(async ({ page }) => {
 //     //await page.close();
 // });

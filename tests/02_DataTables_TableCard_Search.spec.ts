@@ -23,54 +23,6 @@ async function verifyCardVisible(page: Page, testId: string) {
     await expect(card).toBeVisible();
 }
 
-async function countAllRowsAcrossPages(
-    page: Page,
-    tableRows: Locator,
-    nextBtn: Locator
-): Promise<{ totalRows: number; pageCount: number }> {
-    // Jump directly to page 1 first, if a page-1 button exists
-    const page1Btn = page.getByTestId('page-1');
-    if (await page1Btn.isVisible()) {
-        await page1Btn.click();
-        await expect(tableRows.first()).toBeVisible();
-    }
-
-    let totalRows = 0;
-    let pageCount = 0;
-
-    while (true) {
-        await expect(tableRows.first()).toBeVisible();
-        totalRows += await tableRows.count();
-        pageCount++;
-
-        if (await nextBtn.isDisabled()) break;
-        await nextBtn.click();
-    }
-
-    return { totalRows, pageCount };
-}
-
-async function getAllRolesAcrossPages(page: Page): Promise<string[]> {
-    const roles: string[] = [];
-    const nextBtn = page.getByTestId('page-next');
-
-    // Always reset to page 1
-    const firstPageBtn = page.getByTestId('page-1');
-    if (await firstPageBtn.isVisible()) {
-        await firstPageBtn.click();
-    }
-
-    while (true) {
-        const roleCells = page.locator('[data-testid="table-body"] tr td:nth-child(5)');
-        roles.push(...await roleCells.allTextContents());
-
-        if (await nextBtn.isDisabled()) break;
-        await nextBtn.click();
-        await expect(roleCells.first()).toBeVisible();
-    }
-
-    return roles;
-}
 
 // test.afterEach(async ({ page }) => {
 //     //await page.close();
