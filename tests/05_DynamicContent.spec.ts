@@ -99,7 +99,7 @@ test('Delayed card loads content after 5s', async ({ page }) => {
 });
 
 test('Visibility controls demo : Show/Hide/Toggle element', async ({ page }) => {
-    await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'visibility-card');
 
     // 1. Show / Hide / Toggle
     const visibleElement = page.locator('#visibleElement');
@@ -116,7 +116,7 @@ test('Visibility controls demo : Show/Hide/Toggle element', async ({ page }) => 
 });
 
 test('Visibility controls demo : Add/Remove element', async ({ page }) => {
-    await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'visibility-card');
 
     // 2. Add / Remove dynamic element
     const dynamicContainer = page.locator('#dynamicElements');
@@ -141,7 +141,7 @@ test('Visibility controls demo : Add/Remove element', async ({ page }) => {
 });
 
 test('Visibility controls demo : Enable/Disable input', async ({ page }) => {
-    await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'visibility-card');
 
     // 3. Disable / Enable input
     const input = page.getByPlaceholder('Type here...');             //page.locator('#toggleInput');
@@ -155,7 +155,8 @@ test('Visibility controls demo : Enable/Disable input', async ({ page }) => {
 });
 
 test('Visibility controls demo : Start / Stop Toggle', async ({ page }) => {
-    await verifyCardVisible(page, 'delayed-card');
+    //await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'visibility-card');
 
     // 4. Start / Stop toggle
     const toggleBtn = page.locator('#startStopBtn');
@@ -174,4 +175,116 @@ test('Visibility controls demo : Start / Stop Toggle', async ({ page }) => {
     await toggleBtn.click();
     await expect(toggleBtn).toHaveText('Start');
     await expect(status).toHaveText('Status: Stopped');
+});
+
+test('Visibility controls demo : Counter increments, decrements, and resets', async ({ page }) => {
+    //await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'counter-card');
+
+    const counterValue = page.locator('#counterValue');
+
+    // Initial value
+    await expect(counterValue).toHaveText('0');
+
+    // Increment twice
+    await page.locator('#incrementBtn').click();
+    await page.locator('#incrementBtn').click();
+    await expect(counterValue).toHaveText('2');
+
+    // Decrement once
+    await page.locator('#decrementBtn').click();
+    await expect(counterValue).toHaveText('1');
+
+    // Reset
+    await page.locator('#resetCounterBtn').click();
+    await expect(counterValue).toHaveText('0');
+});
+
+test('Visibility controls demo : Timer starts, stops, and resets', async ({ page }) => {
+    //await verifyCardVisible(page, 'delayed-card');
+    await verifyCardVisible(page, 'counter-card');
+
+    const timerDisplay = page.locator('#timerDisplay');
+
+    // Initial state
+    await expect(timerDisplay).toHaveText('00:00');
+
+    // Start timer
+    await page.locator('#startTimerBtn').click();
+    await page.waitForTimeout(2000); // wait 2 seconds
+    const runningValue = await timerDisplay.innerText();
+    expect(runningValue).not.toBe('00:00'); // should have advanced
+
+    // Stop timer
+    await page.locator('#stopTimerBtn').click();
+    const stoppedValue = await timerDisplay.innerText();
+    await page.waitForTimeout(2000);
+    await expect(timerDisplay).toHaveText(stoppedValue); // value should not change
+
+    // Reset timer
+    await page.locator('#resetTimerBtn').click();
+    await expect(timerDisplay).toHaveText('00:00');
+});
+
+test('Visibility controls demo : Download Progress Indicators', async ({ page }) => {
+    await verifyCardVisible(page, 'progress-card');
+
+    const progressBar = page.locator('#progressBar');
+
+    // Initial state
+    await expect(progressBar).toHaveText('0%');
+    await expect(progressBar).toHaveAttribute('style', /width: 0%/);
+
+    // Start download
+    await page.locator('#startProgressBtn').click();
+
+    // Assert final state
+    await expect(progressBar).toHaveText('100%', { timeout: 6000 });
+    await expect(progressBar).toHaveAttribute('style', /width: 100%/);
+});
+
+test('Visibility controls demo : Circular spinner toggles', async ({ page }) => {
+    await verifyCardVisible(page, 'progress-card');
+
+    const spinner = page.locator('#spinner');
+    const status = page.locator('#spinnerStatus');
+    const toggleBtn = page.locator('#toggleSpinnerBtn');
+
+    // Initial state: hidden spinner, "Click to load"
+    await expect(spinner).toHaveClass(/hidden/);
+    await expect(status).toHaveText('Click to load');
+
+    // Toggle on: spinner visible, "Loading..."
+    await toggleBtn.click();
+    await expect(spinner).not.toHaveClass(/hidden/);
+    await expect(status).toHaveText('Loading...');
+
+    // Toggle off: spinner hidden again, back to "Click to load"
+    await toggleBtn.click();
+    await expect(spinner).toHaveClass(/hidden/);
+    await expect(status).toHaveText('Click to load');
+});
+
+test('Visibility controls demo : Skeleton toggles to loaded content', async ({ page }) => {
+    await verifyCardVisible(page, 'progress-card');
+
+    const skeletonArea = page.locator('#skeletonArea');
+    const loadedContent = page.locator('#loadedContent');
+    const toggleBtn = page.locator('#toggleSkeletonBtn');
+
+    // Initial state: skeleton visible, content hidden
+    await expect(skeletonArea).toBeVisible();
+    await expect(loadedContent).toHaveClass(/hidden/);
+
+    // Toggle: skeleton hidden, content visible
+    await toggleBtn.click();
+    await expect(skeletonArea).toHaveClass(/hidden/);
+    await expect(loadedContent).toBeVisible();
+    await expect(loadedContent).toContainText('Jane Cooper');
+    await expect(loadedContent).toContainText('Senior Developer at TechCorp');
+
+    // Toggle back: skeleton visible again, content hidden
+    await toggleBtn.click();
+    await expect(skeletonArea).toBeVisible();
+    await expect(loadedContent).toHaveClass(/hidden/);
 });
