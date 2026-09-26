@@ -32,7 +32,7 @@ test.describe('upload a single valid file and shows it in the file list', () => 
 
         const filename = 'File_Upload.pdf';
 
-        const filePath = path.join(__dirname, '..', 'FilesForUploads', filename);
+        const filePath = path.join(__dirname, '../../..', 'FilesForUploads', filename);
 
         await page.locator('#fileInput').setInputFiles(filePath);
 
@@ -59,7 +59,7 @@ test.describe('upload a single valid file and shows it in the file list', () => 
 
         // Build absolute paths for each file
         const filePaths = filenames.map(name =>
-            path.join(__dirname, '..', 'FilesForUploads', name)
+            path.join(__dirname, '../../..', 'FilesForUploads', name)
         );
 
         // Upload multiple files at once
@@ -89,7 +89,7 @@ test.describe('upload a single valid file and shows it in the file list', () => 
 
         // Build absolute paths for each file
         const filePaths = filenames.map(name =>
-            path.join(__dirname, '..', 'FilesForUploads', name)
+            path.join(__dirname, '../../..', 'FilesForUploads', name)
         );
 
         // Upload multiple files at once
