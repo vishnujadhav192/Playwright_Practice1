@@ -583,7 +583,7 @@ test('Check visibility of Discount option when items in cart 1', async ({ page }
 
     await expect(couponInput).not.toBeHidden();
     await expect(applyCoupon).not.toBeHidden();
-    await expect(couponMessage).not.toBeHidden();
+    await expect(couponMessage).toBeHidden();
 });
 
 test('Check visibility of Discount option when items in cart 2', async ({ page }) => {

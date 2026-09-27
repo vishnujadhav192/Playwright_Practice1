@@ -12,7 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  //timeout: 120000,
+ // timeout: 120000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -24,7 +24,12 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 //workers:2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  //reporter: 'html',
+    reporter: [
+ //   ['allure-playwright', { outputFolder: 'allure-results' }]
+    ['html']
+  //  ['./tests/CustomReporter.ts', { customOption: 'some value' }]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */

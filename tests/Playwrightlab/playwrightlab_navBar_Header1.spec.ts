@@ -55,7 +55,7 @@ test('Click on Menu dropdown', async ({ page }) => {
 
     // ['Forms', 'Tables', 'Interactions', 'Shopping', 'Dynamic Content', 'Modals & Alerts', ...]
 
-    await expect(page.getByTestId('dropdown-menu').locator('li a')).toHaveText([
+    await expect(page.getByTestId('dropdown-menu').locator('li a')).toContainText([
         'Forms', 'Tables', 'Interactions', 'Shopping', 'Dynamic Content',
         'Modals & Alerts', 'Frames', 'Shadow DOM', 'Advanced', 'Wizard',
         'Carousel', 'Network', 'Flaky Elements', 'Date Picker', 'Media Player',

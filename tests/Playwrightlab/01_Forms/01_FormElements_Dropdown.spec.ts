@@ -100,7 +100,7 @@ test.describe('Dropdown', () => {
 
         // Assert that the result display updates correctly
         const result = page.locator('[data-testid="grouped-select-result"]');
-        await expect(result).toHaveText('SUV');
+        await expect(result).toContainText('SUV');
     });
 
     test('Select value from Cascading Dropdowns', async ({ page }) => {

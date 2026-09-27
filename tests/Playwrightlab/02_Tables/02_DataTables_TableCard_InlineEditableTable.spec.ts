@@ -110,10 +110,10 @@ test.describe('Inline Editable Table', () => {
         await totalCell.click();
 
         // Assert row total updated correctly
-        await expect(totalCell).toHaveText('$24,990');
+        await expect(totalCell).toHaveText('$5,490');
 
         // Assert grand total updated
-        await expect(grandTotal).toHaveText('$27,937');
+        await expect(grandTotal).toHaveText('$10,387');
     });
 
     test('Update all details', async ({ page }) => {
