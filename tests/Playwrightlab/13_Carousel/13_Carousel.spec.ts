@@ -40,6 +40,9 @@ test('Click on Menu Carousel option', async ({ page }) => {
     // Assert the dropdown closes after selecting an item
     await expect(page.getByTestId('dropdown-menu')).toBeHidden();
 
+        await verifyCardVisible(page, 'carousel-card');
+
+
     // By id
     await expect(page.locator('#carouselDesc')).toContainText('Image carousel with navigation, autoplay, and indicator dots.');
 

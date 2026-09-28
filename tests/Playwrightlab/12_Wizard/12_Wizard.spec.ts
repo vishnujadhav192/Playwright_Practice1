@@ -36,6 +36,8 @@ test('Click on Menu Wizard option', async ({ page }) => {
     // Assert the dropdown closes after selecting an item
     await expect(page.getByTestId('dropdown-menu')).toBeHidden();
 
+        await verifyCardVisible(page, 'wizard-card');
+
     // By id
     await expect(page.locator('#wizardDesc')).toContainText('Navigate through a multi-step form with validation at each step.');
 
