@@ -178,3 +178,83 @@ test('Local Storage set and get', async ({ page }) => {
     await page.click('[data-testid="get-storage-btn"]');
     await expect(storageResult).toContainText(`"${localStorageKey}" not found`);
 });
+
+test.describe(' Image Gallery with Lightbox', () => {
+    test('Gallery items are visible', async ({ page }) => {
+        await verifyCardVisible(page, 'gallery-card');
+
+        const galleryGrid = page.locator('[data-testid="gallery-grid"]');
+        await expect(galleryGrid).toBeVisible();
+
+        // Check that all 6 items are present
+        for (let i = 1; i <= 6; i++) {
+            await expect(page.locator(`[data-testid="gallery-item-${i}"]`)).toBeVisible();
+        }
+    });
+
+    test('Gallery item has image and caption', async ({ page }) => {
+        await verifyCardVisible(page, 'gallery-card');
+        const item = page.locator('[data-testid="gallery-item-2"]'); // Ocean
+        await expect(item.locator('img')).toBeVisible();
+        await expect(item).toContainText('Ocean');
+    });
+
+    test('Clicking gallery item opens lightbox', async ({ page }) => {
+        await verifyCardVisible(page, 'gallery-card');
+        const item = page.locator('[data-testid="gallery-item-3"]'); // Forest
+        await item.click();
+
+        const lightbox = page.locator('[data-testid="lightbox"]');
+        await expect(lightbox).toBeVisible();
+
+        // Assert the image alt attribute
+        const lightboxImg = lightbox.locator('img');
+        await expect(lightboxImg).toHaveAttribute('alt', 'Forest');
+    });
+
+    test('Lightbox navigation with Next button', async ({ page }) => {
+
+        await verifyCardVisible(page, 'gallery-card');
+        // Open the gallery item (Ocean in this case)
+        const item = page.locator('[data-testid="gallery-item-2"]'); // Ocean
+        await item.click();
+
+        const lightbox = page.locator('[data-testid="lightbox"]');
+        await expect(lightbox).toBeVisible();
+
+        // Assert initial image alt
+        const lightboxImg = lightbox.locator('img');
+        await expect(lightboxImg).toHaveAttribute('alt', 'Ocean');
+
+        // Click Next to move forward
+        await page.click('[data-testid="lightbox-next"]');
+
+        // Assert the image alt has changed (e.g. to "Forest" if that's next in sequence)
+        await expect(lightboxImg).toHaveAttribute('alt', 'Forest');
+
+        // Optionally, click Next again to cycle further
+        await page.click('[data-testid="lightbox-next"]');
+        await expect(lightboxImg).toHaveAttribute('alt', 'Desert');
+    });
+
+    test('Lightbox navigation with Prev button', async ({ page }) => {
+
+        await verifyCardVisible(page, 'gallery-card');
+        // Open the gallery item (Ocean in this case)
+        const item = page.locator('[data-testid="gallery-item-2"]'); // Ocean
+        await item.click();
+
+        const lightbox = page.locator('[data-testid="lightbox"]');
+        await expect(lightbox).toBeVisible();
+
+        // Assert initial image alt
+        const lightboxImg = lightbox.locator('img');
+        await expect(lightboxImg).toHaveAttribute('alt', 'Ocean');
+
+        // Click Next to move forward
+        await page.click('[data-testid="lightbox-prev"]');
+
+        // Assert the image alt has changed (e.g. to "Mountains" if that's Prev in sequence)
+        await expect(lightboxImg).toHaveAttribute('alt', 'Mountains');
+    });
+});
