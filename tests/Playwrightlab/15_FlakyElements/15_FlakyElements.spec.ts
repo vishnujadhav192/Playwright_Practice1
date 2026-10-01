@@ -47,3 +47,34 @@ test('Click on Menu Flaky Elements option', async ({ page }) => {
     // Also check the section is visible (has the 'section-title' class)
     await expect(page.locator('#flakyTitle')).toHaveClass(/section-title/);
 })
+
+test.describe('Random Appear Element', () => {
+  test('should handle random appear/disappear states', async ({ page }) => {
+    
+    await verifyCardVisible(page, 'random-appear-card');
+
+    const box = page.locator('[data-testid="random-appear-box"]');
+    const log = page.locator('[data-testid="random-appear-log"]');
+
+    // Retry loop to stabilize flaky behavior
+    let appeared = false;
+    for (let i = 0; i < 5; i++) {
+      if (await box.isVisible()) {
+        appeared = true;
+        break;
+      }
+      await page.waitForTimeout(2000); // wait for next toggle
+    }
+
+    // Assert that the box eventually appeared
+    expect(appeared).toBeTruthy();
+
+    // Verify the text inside the box
+    await expect(page.locator('[data-testid="random-appear-text"]'))
+      .toHaveText('Now you see me!');
+
+    // Verify the log updates correctly
+    const logText = await log.textContent();
+    expect(['Hidden', 'Visible']).toContain(logText);
+  });
+});
