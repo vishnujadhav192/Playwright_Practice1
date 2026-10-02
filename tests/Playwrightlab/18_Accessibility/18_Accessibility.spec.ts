@@ -48,3 +48,32 @@ test('Click on Menu Accessibility option', async ({ page }) => {
   await expect(page.locator('#a11yTitle')).toHaveClass(/section-title/);
   await expect(page.locator('#a11yTag')).toHaveClass(/section-tag/);
 })
+
+test('Keyboard Navigation', async ({ page }) => {
+  await verifyCardVisible(page, 'keyboard-nav-card');
+
+  const buttons = page.getByTestId('a11y-buttons').locator('button');
+  const result = page.getByTestId('a11y-key-result');
+  const skipLink = page.getByTestId('skip-link');
+  const target = page.getByTestId('a11y-target');
+
+  // Focus first button and activate with Space
+  await buttons.nth(0).focus();
+  await page.keyboard.press('Space');
+  await expect(result).toHaveText(/Clicked: Button 1/);
+
+  // Tab to second button and activate with Enter
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await expect(result).toHaveText(/Clicked: Button 2/);
+
+  // Tab to third button and activate
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Space');
+  await expect(result).toHaveText(/Clicked: Button 3/);
+
+  // Test skip link navigation
+  await skipLink.focus();
+  await page.keyboard.press('Enter');
+  await expect(target).toBeFocused();
+});
