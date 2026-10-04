@@ -77,3 +77,74 @@ test('Keyboard Navigation', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(target).toBeFocused();
 });
+
+test('ARIA searchbox updates live region', async ({ page }) => {
+
+  await verifyCardVisible(page, 'aria-card');
+
+  const searchInput = page.getByTestId('a11y-search');
+  const liveRegion = page.getByTestId('a11y-live-region');
+
+  // Type "E" and check results
+  await searchInput.fill('E');
+  await expect(liveRegion).toContainText('Apple, Cherry, Date, Elderberry, Grape, Honeydew');
+
+  // Type "Ap" and check narrowed results
+  await searchInput.fill('Ap');
+  await expect(liveRegion).toContainText('Apple');
+
+  // Clear input and check empty state
+  await searchInput.fill('');
+  await expect(liveRegion).toHaveText('');
+});
+
+
+test('ARIA expanded toggle panel', async ({ page }) => {
+  await verifyCardVisible(page, 'aria-card');
+
+  const expandBtn = page.getByTestId('a11y-expand-btn');
+  const expandContent = page.getByTestId('a11y-expand-content');
+
+  // Initial state: collapsed
+  await expect(expandBtn).toHaveAttribute('aria-expanded', 'false');
+  await expect(expandContent).toHaveClass(/hidden/);
+
+  // Click to expand
+  await expandBtn.click();
+  await expect(expandBtn).toHaveAttribute('aria-expanded', 'true');
+  await expect(expandContent).toBeVisible();
+
+  // Assert on the paragraph text inside the panel
+  await expect(expandContent).toContainText('This panel is controlled by the button above. Check aria-expanded state.');
+
+  // Click again to collapse
+  await expandBtn.click();
+  await expect(expandBtn).toHaveAttribute('aria-expanded', 'false');
+  await expect(expandContent).toHaveClass(/hidden/);
+});
+
+test('ARIA expanded Focus Trap', async ({ page }) => {
+  await verifyCardVisible(page, 'aria-card');
+
+  //  const focusTrapOpenBtn = page.getByTestId('focus-trap-open');
+  const focusTrapOpenBtn = page.getByRole('button', { name: 'Open Focus Trap' });
+  const focusTrapArea = page.getByTestId('focus-trap-area');
+
+  await focusTrapOpenBtn.click();
+  await expect(focusTrapArea).not.toHaveClass(/hidden/);
+  await expect(focusTrapArea).toContainText('Focus is trapped here! Tab cycles only within this area.');
+
+  //  const focusTrapInput = page.getByTestId('focus-trap-input');
+
+  const focusTrapInput = page.locator('#focusTrapInput');
+  await focusTrapInput.fill('Playwright');
+
+  const focusTrapAction = page.getByTestId('focus-trap-action');
+  await focusTrapAction.click();
+
+  const focusTrapClose = page.getByTestId('focus-trap-close');
+  await focusTrapClose.click();
+
+  await expect(focusTrapArea).toHaveClass(/hidden/);
+
+});
