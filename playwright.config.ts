@@ -42,14 +42,14 @@ export default defineConfig({
     launchOptions:{
       slowMo: 1000
     },
-     viewport: { width: 1920, height: 1080 },
+     viewport: { width: 1707, height: 772 },
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], },
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1500, height: 690 }},
     },
 
     // {
